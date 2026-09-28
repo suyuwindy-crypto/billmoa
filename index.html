@@ -25,11 +25,14 @@
   h1{font-size:22px; font-weight:800; letter-spacing:-.02em;}
   .lede{font-size:13px; color:var(--sub); margin:2px 0 16px;}
 
+  .banner{display:none; background:var(--warn-soft); border:1px solid #F1D9AE; color:#8A5300;
+    font-size:12px; line-height:1.6; border-radius:12px; padding:10px 12px; margin-bottom:14px;}
+
   .panel{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius); padding:16px; margin-bottom:14px;}
   .panel h2{font-size:13px; font-weight:700; color:var(--sub); margin-bottom:10px; display:flex; align-items:center; justify-content:space-between;}
 
   textarea{
-    width:100%; min-height:120px; border:1px solid var(--line); border-radius:12px;
+    width:100%; min-height:110px; border:1px solid var(--line); border-radius:12px;
     padding:12px; font-size:13px; line-height:1.6; color:var(--ink); resize:vertical;
     font-family:inherit; background:#FAFBFD;
   }
@@ -45,6 +48,7 @@
   .hero .total{font-size:34px; font-weight:800; letter-spacing:-.02em; margin-top:2px; font-variant-numeric:tabular-nums;}
   .hero .total small{font-size:18px; font-weight:700; color:var(--sub); margin-left:2px;}
   .hero .meta{font-size:12px; color:var(--sub); margin-top:4px;}
+  .sharebtn{width:100%; margin-top:14px; padding:12px 0; font-size:14px;}
 
   .strip{display:none; overflow-x:auto; -webkit-overflow-scrolling:touch; padding:14px 12px;}
   .strip-inner{display:flex; gap:6px; min-width:max-content;}
@@ -59,7 +63,7 @@
   .cards{display:none; flex-direction:column; gap:10px; margin-bottom:14px;}
   .card{
     background:var(--panel); border:1px solid var(--line); border-radius:var(--radius);
-    padding:14px 16px; display:flex; align-items:center; gap:12px;
+    padding:14px 12px 14px 16px; display:flex; align-items:center; gap:12px;
   }
   .chip{
     flex:0 0 auto; width:44px; height:30px; border-radius:7px;
@@ -80,26 +84,26 @@
     width:52px; border:1px solid #E5C98F; border-radius:8px; padding:4px 6px;
     font-size:13px; font-weight:700; text-align:center; font-family:inherit; color:var(--warn); background:#fff;
   }
+  .xbtn{background:none; border:none; color:var(--past); font-size:18px; line-height:1; padding:4px 6px; cursor:pointer;}
 
   .history{display:none;}
-  .hrow{
-    display:flex; align-items:center; gap:10px; padding:10px 2px;
-    border-bottom:1px solid var(--line); font-size:13px;
-  }
+  .hrow{display:flex; align-items:center; gap:10px; padding:11px 4px; border-bottom:1px solid var(--line); font-size:13px; cursor:pointer; border-radius:8px;}
   .hrow:last-child{border-bottom:none;}
-  .hrow .hmain{flex:1; cursor:pointer;}
+  .hrow.sel{background:var(--accent-soft);}
+  .hrow .hmain{flex:1;}
   .hrow .hdate{font-weight:700;}
-  .hrow .hsub{font-size:11px; color:var(--sub);}
+  .hrow .hsub{font-size:11px; color:var(--sub); margin-left:4px;}
   .hrow .hamt{font-weight:800; font-variant-numeric:tabular-nums;}
-  .hdel{background:none; border:none; color:var(--past); font-size:16px; padding:4px 6px; cursor:pointer;}
 
   .miss{display:none; font-size:12px; color:var(--sub); background:var(--panel); border:1px dashed var(--line);
     border-radius:12px; padding:10px 12px; margin-bottom:14px; white-space:pre-wrap;}
   .foot{font-size:11px; color:var(--sub); margin-top:16px; line-height:1.7;}
+  .backup{display:flex; gap:8px; margin-top:12px;}
+  .backup button{flex:1; font-size:12px; padding:10px 0; background:#E9ECF2; color:var(--sub);}
   .empty{display:none; text-align:center; color:var(--sub); font-size:13px; padding:20px 0;}
   .toast{
     position:fixed; left:50%; bottom:calc(24px + env(safe-area-inset-bottom)); transform:translateX(-50%);
-    background:var(--ink); color:#fff; font-size:13px; font-weight:600;
+    background:var(--ink); color:#fff; font-size:13px; font-weight:600; white-space:nowrap;
     padding:10px 18px; border-radius:99px; opacity:0; pointer-events:none; transition:opacity .25s;
   }
   .toast.show{opacity:1;}
@@ -112,42 +116,48 @@
 <body>
 
 <h1>청구모아</h1>
-<p class="lede">이번 달 카드값, 언제 얼마 빠져나가는지 한 화면으로.</p>
+<p class="lede">청구문자가 올 때마다 넣으면, 달별로 알아서 합쳐집니다.</p>
+
+<div class="banner" id="banner">지금은 사파리 화면이에요. 사파리와 홈 화면 앱은 기록을 따로 저장하고, 사파리 쪽 기록은 한동안 안 열면 지워질 수 있습니다. 홈 화면의 <b>청구모아</b> 아이콘으로 열어 주세요.</div>
 
 <div class="panel">
   <h2>청구문자 붙여넣기 <span id="count" style="color:var(--accent)"></span></h2>
-  <textarea id="input" spellcheck="false" placeholder="카드사에서 온 결제예정 문자·카톡을 여기에 붙여넣고 '정리하기'를 누르세요. 여러 통을 한꺼번에 넣어도 됩니다."></textarea>
+  <textarea id="input" spellcheck="false" placeholder="카드사 결제예정 문자·카톡을 붙여넣고 '모으기'를 누르세요. 한 통씩 넣어도, 여러 통을 한꺼번에 넣어도 같은 달끼리 합쳐집니다."></textarea>
   <div class="btnrow">
-    <button class="primary" id="parseBtn">정리하기</button>
+    <button class="primary" id="parseBtn">모으기</button>
     <button class="ghost" id="clearBtn">지우기</button>
   </div>
 </div>
+
+<div class="miss" id="miss"></div>
 
 <div class="panel hero" id="hero">
   <div class="label" id="heroLabel">카드값 합계</div>
   <div class="total"><span id="totalAmt">0</span><small>원</small></div>
   <div class="meta" id="heroMeta"></div>
+  <button class="ghost sharebtn" id="shareBtn">카톡으로 보낼 요약 복사</button>
 </div>
 
 <div class="panel strip" id="strip"><div class="strip-inner" id="stripInner"></div></div>
 
 <div class="cards" id="cards"></div>
-<div class="miss" id="miss"></div>
-<div class="empty" id="empty">아직 정리된 기록이 없습니다. 첫 청구문자를 붙여넣어 보세요.</div>
+<div class="empty" id="empty">아직 모은 청구서가 없습니다. 첫 청구문자를 붙여넣어 보세요.</div>
 
 <div class="panel history" id="history">
-  <h2>지난 기록</h2>
+  <h2>달별 기록</h2>
   <div id="historyList"></div>
 </div>
 
-<p class="foot">· 입력한 문자와 기록은 이 기기(브라우저)에만 저장되며 어디에도 전송되지 않습니다.<br>
-· 결제일이 문자에 없는 카드(삼성 등)는 한 번 입력하면 다음 달부터 자동으로 기억합니다.<br>
-· 사파리에서 공유 버튼 → "홈 화면에 추가"를 누르면 앱처럼 쓸 수 있습니다.</p>
+<p class="foot">· 기록은 이 폰에만 저장되며 어디에도 전송되지 않습니다.<br>
+· 같은 달에 같은 카드사 문자를 다시 넣으면 새 금액으로 바뀝니다.<br>
+· 결제일이 문자에 없는 카드(삼성 등)는 한 번 입력하면 다음 달부터 기억합니다.<br>
+· 폰을 바꾸거나 혹시 몰라 보관하려면 '백업 복사'로 메모장·카톡 나에게 보내기에 저장해 두세요. 복원은 그 백업 글을 위 칸에 붙여넣고 '모으기'를 누르면 됩니다.</p>
+<div class="backup"><button id="backupBtn">백업 복사</button></div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-/* ================= 파싱 엔진 (v2와 동일) ================= */
+/* ================= 파싱 엔진 ================= */
 
 const ISSUERS = [
   {key:"KB국민카드", match:/KB\s*국민\s*카드|국민카드|KB카드/i, short:"KB",  bg:"#FFBC00", fg:"#3D3000"},
@@ -223,6 +233,8 @@ function parseBlock(block){
     const mo = block.match(/(\d{1,2})\s*월/);
     if(mo) month = parseInt(mo[1],10);
   }
+  if(month!==null && (month<1 || month>12)) month = null;
+  if(day!==null && (day<1 || day>31)) day = null;
 
   const annual = /연회비/.test(block) ? "연회비 포함" : null;
   return {issuerKey:issuer.key, amount, month, day, note:annual};
@@ -234,25 +246,64 @@ function parseAll(text){
   for(const block of blocks){
     const r = parseBlock(block);
     if(r) results.push(r);
-    else if(findIssuer(block) && hasAmount(block)) missed.push(block);
-    else if(!findIssuer(block) && hasAmount(block)) missed.push(block);
+    else if(hasAmount(block)) missed.push(block);
   }
-  const dedup = {};
-  for(const r of results) dedup[r.issuerKey] = r;
-  return {rows:Object.values(dedup), missed};
+  return {rows:results, missed};
 }
 
-/* ================= 저장소 (기기 내 저장) ================= */
+/* ================= 저장소: 청구월 단위로 누적 ================= */
 
 const STORAGE_KEY = "billmoa_v1";
-let memStore = null; // 저장이 막힌 환경(미리보기 등)용 임시 저장
+const today = new Date();
+const CUR_M = today.getMonth()+1;
+let memStore = null;
+
+const pad = n=>String(n).padStart(2,"0");
+
+// 문자에 연도가 없으니 오늘 기준으로 가장 그럴듯한 연도를 붙인다
+function yearFor(month){
+  let y = today.getFullYear();
+  if(month - CUR_M > 6) y--;       // 1월에 받은 12월 문자
+  else if(CUR_M - month > 6) y++;  // 12월에 받은 1월 결제 문자
+  return y;
+}
+function monthKeyOf(r){
+  const m = r.month || CUR_M;
+  return yearFor(m)+"-"+pad(m);
+}
+function keyLabel(key){ return parseInt(key.slice(5),10)+"월"; }
+
+function emptyStore(){ return {version:2, months:{}, dueDays:{}}; }
+
+function mergeRows(store, rows){
+  const touched = new Set();
+  for(const r of rows){
+    const key = monthKeyOf(r);
+    if(!store.months[key]) store.months[key] = {rows:{}};
+    store.months[key].rows[r.issuerKey] = {
+      amount:r.amount, month:parseInt(key.slice(5),10), day:r.day, note:r.note||null
+    };
+    touched.add(key);
+  }
+  return [...touched];
+}
+
+// v3(붙여넣기별 조각 기록) → v4(달별 누적) 자동 이관
+function migrate(s){
+  if(!s) return emptyStore();
+  if(s.version===2){ s.months = s.months||{}; s.dueDays = s.dueDays||{}; return s; }
+  const n = emptyStore();
+  n.dueDays = s.dueDays || {};
+  const snaps = (s.snapshots||[]).slice().reverse(); // 오래된 것부터 합쳐야 최신 금액이 남음
+  for(const sn of snaps) mergeRows(n, sn.rows||[]);
+  return n;
+}
 
 function loadStore(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw) return JSON.parse(raw);
-  }catch(e){ if(memStore) return memStore; }
-  return memStore || {snapshots:[], dueDays:{}};
+  let raw = null;
+  try{ raw = localStorage.getItem(STORAGE_KEY); }catch(e){}
+  if(raw){ try{ return migrate(JSON.parse(raw)); }catch(e){} }
+  return memStore || emptyStore();
 }
 function saveStore(store){
   memStore = store;
@@ -260,164 +311,191 @@ function saveStore(store){
   catch(e){ return false; }
 }
 
-/* ================= 렌더링 ================= */
+// 가능하면 브라우저에 "이 기록은 지우지 말아 달라"고 요청
+try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); }catch(e){}
+
+/* ================= 화면 ================= */
 
 const $ = id=>document.getElementById(id);
 const fmt = n=>n.toLocaleString("ko-KR");
-const today = new Date();
-let currentRows = [];
+let selectedKey = null;
 
 function toast(msg){
   const t=$("toast"); t.textContent=msg; t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"), 1800);
+  clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.remove("show"), 2000);
 }
 
-function dday(month, day){
-  if(month==null || day==null) return null;
-  const d = new Date(today.getFullYear(), month-1, day);
-  return Math.round((d - new Date(today.getFullYear(),today.getMonth(),today.getDate()))/86400000);
+function monthRows(store, key){
+  const m = store.months[key];
+  if(!m) return [];
+  return Object.entries(m.rows).map(([k,v])=>({
+    issuerKey:k, ...v, day: v.day!=null ? v.day : (store.dueDays[k]||null)
+  })).sort((a,b)=>(a.day??99)-(b.day??99));
 }
 
-function renderRows(rows){
-  currentRows = rows;
+function sortedKeys(store){ return Object.keys(store.months).sort().reverse(); }
+
+function dday(key, day){
+  const y = parseInt(key.slice(0,4),10), m = parseInt(key.slice(5),10);
+  const d = new Date(y, m-1, day);
+  const t = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+  return Math.round((d - t)/86400000);
+}
+
+function render(){
   const store = loadStore();
-  for(const r of rows){
-    if(r.day==null && store.dueDays[r.issuerKey]) r.day = store.dueDays[r.issuerKey];
-  }
-  rows.sort((a,b)=>{
-    const ka = a.day!=null ? ((a.month||99)*100+a.day) : 99999;
-    const kb = b.day!=null ? ((b.month||99)*100+b.day) : 99999;
-    return ka-kb;
-  });
+  const keys = sortedKeys(store);
+  if(!selectedKey || !store.months[selectedKey]) selectedKey = keys[0] || null;
 
-  $("empty").style.display = rows.length ? "none":"block";
-  $("hero").style.display = rows.length ? "block":"none";
-  $("cards").style.display = rows.length ? "flex":"none";
-  $("strip").style.display = "none";
+  const rows = selectedKey ? monthRows(store, selectedKey) : [];
+  const has = rows.length>0;
+  $("empty").style.display = has ? "none":"block";
+  $("hero").style.display = has ? "block":"none";
+  $("cards").style.display = has ? "flex":"none";
+  $("strip").style.display = has ? "block":"none";
 
   const cardsEl = $("cards");
   cardsEl.innerHTML = "";
-  if(!rows.length) return;
 
-  const total = rows.reduce((s,r)=>s+r.amount,0);
-  $("totalAmt").textContent = fmt(total);
-  const months = [...new Set(rows.map(r=>r.month).filter(Boolean))];
-  $("heroLabel").textContent = (months.length===1 ? months[0]+"월 ":"") + "카드값 합계";
-  $("heroMeta").textContent = rows.length+"개 카드 · 오늘 "+(today.getMonth()+1)+"/"+today.getDate()+" 기준";
+  if(has){
+    const total = rows.reduce((s,r)=>s+r.amount,0);
+    $("totalAmt").textContent = fmt(total);
+    $("heroLabel").textContent = keyLabel(selectedKey)+" 카드값 합계";
+    const pending = rows.filter(r=>r.day!=null && dday(selectedKey,r.day)>=0).reduce((s,r)=>s+r.amount,0);
+    $("heroMeta").textContent = rows.length+"개 카드"+(pending && pending!==total ? " · 아직 안 나간 돈 "+fmt(pending)+"원" : "");
 
-  for(const r of rows){
-    const issuer = issuerByKey(r.issuerKey) || {key:r.issuerKey, short:"카드", bg:"#666", fg:"#fff"};
-    const el = document.createElement("div");
-    const dd = dday(r.month, r.day);
-    const noDate = (r.day==null);
-    el.className = "card"+(noDate?" warn":"");
-    let dueHtml;
-    if(noDate){
-      dueHtml = (r.month?r.month+"월 · ":"")+"결제일 미표기 → <input class='dueinput' inputmode='numeric' maxlength='2' placeholder='일' data-issuer='"+issuer.key+"'>일";
-    } else {
-      let tag;
-      if(dd===0) tag = "<span class='dday today'>오늘 출금</span>";
-      else if(dd>0) tag = "<span class='dday'>D-"+dd+"</span>";
-      else tag = "<span class='dday past'>출금 완료</span>";
-      dueHtml = (r.month||"?")+"/"+String(r.day).padStart(2,"0")+" 출금 · "+tag;
+    for(const r of rows){
+      const issuer = issuerByKey(r.issuerKey) || {key:r.issuerKey, short:"카드", bg:"#666", fg:"#fff"};
+      const el = document.createElement("div");
+      const noDate = (r.day==null);
+      el.className = "card"+(noDate?" warn":"");
+      let dueHtml;
+      if(noDate){
+        dueHtml = "결제일 미표기 → <input class='dueinput' inputmode='numeric' maxlength='2' placeholder='일' data-issuer='"+issuer.key+"'>일";
+      } else {
+        const dd = dday(selectedKey, r.day);
+        let tag;
+        if(dd===0) tag = "<span class='dday today'>오늘 출금</span>";
+        else if(dd>0) tag = "<span class='dday'>D-"+dd+"</span>";
+        else tag = "<span class='dday past'>출금 완료</span>";
+        dueHtml = r.month+"/"+pad(r.day)+" 출금 · "+tag;
+      }
+      el.innerHTML =
+        "<div class='chip' style='background:"+issuer.bg+";color:"+issuer.fg+"'>"+issuer.short+"</div>"+
+        "<div class='info'><div class='name'>"+issuer.key+"</div><div class='due'>"+dueHtml+"</div>"+
+        (r.note?"<div class='note'>"+r.note+"</div>":"")+"</div>"+
+        "<div class='amt'>"+fmt(r.amount)+"원</div>"+
+        "<button class='xbtn' aria-label='이 카드 빼기' data-issuer='"+issuer.key+"'>×</button>";
+      cardsEl.appendChild(el);
     }
-    el.innerHTML =
-      "<div class='chip' style='background:"+issuer.bg+";color:"+issuer.fg+"'>"+issuer.short+"</div>"+
-      "<div class='info'><div class='name'>"+issuer.key+"</div><div class='due'>"+dueHtml+"</div>"+
-      (r.note?"<div class='note'>"+r.note+"</div>":"")+"</div>"+
-      "<div class='amt'>"+fmt(r.amount)+"원</div>";
-    cardsEl.appendChild(el);
+
+    cardsEl.querySelectorAll(".dueinput").forEach(inp=>{
+      inp.addEventListener("change", e=>{
+        const v = parseInt(e.target.value,10);
+        if(!v || v<1 || v>31) return;
+        const st = loadStore();
+        st.dueDays[e.target.dataset.issuer] = v;
+        saveStore(st);
+        render();
+        toast(e.target.dataset.issuer+" 결제일 "+v+"일로 기억했습니다");
+      });
+    });
+    cardsEl.querySelectorAll(".xbtn").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        const k = btn.dataset.issuer;
+        const st = loadStore();
+        if(st.months[selectedKey]){
+          delete st.months[selectedKey].rows[k];
+          if(!Object.keys(st.months[selectedKey].rows).length) delete st.months[selectedKey];
+        }
+        saveStore(st);
+        render();
+        toast(k+"를 "+keyLabel(selectedKey)+"에서 뺐습니다");
+      });
+    });
+
+    renderStrip(rows);
   }
 
-  cardsEl.querySelectorAll(".dueinput").forEach(inp=>{
-    inp.addEventListener("change", e=>{
-      const v = parseInt(e.target.value,10);
-      if(!v || v<1 || v>31) return;
-      const store = loadStore();
-      store.dueDays[e.target.dataset.issuer] = v;
-      saveStore(store);
-      snapshotCurrent(); // 결제일 반영해서 기록도 갱신
-      renderRows(currentRows.map(r=>({...r})));
-      renderHistory();
-      toast(e.target.dataset.issuer+" 결제일 "+v+"일로 기억했습니다");
-    });
-  });
-
-  renderStrip(rows);
+  renderHistory(store, keys);
 }
 
 function renderStrip(rows){
-  const strip = $("strip"), inner = $("stripInner");
-  const curMonth = today.getMonth()+1;
-  const payDays = new Set(rows.filter(r=>r.day!=null && r.month===curMonth).map(r=>r.day));
-  const last = new Date(today.getFullYear(), curMonth, 0).getDate();
-  inner.innerHTML="";
+  const inner = $("stripInner");
+  const y = parseInt(selectedKey.slice(0,4),10), m = parseInt(selectedKey.slice(5),10);
+  const payDays = new Set(rows.filter(r=>r.day!=null).map(r=>r.day));
+  const last = new Date(y, m, 0).getDate();
+  const isThisMonth = (y===today.getFullYear() && m===CUR_M);
+  inner.innerHTML = "";
   for(let d=1; d<=last; d++){
-    const el=document.createElement("div");
-    const isToday = d===today.getDate();
-    el.className="day"+(isToday?" today":payDays.has(d)?" pay":"");
-    el.innerHTML="<div class='num'>"+d+"</div>"+(payDays.has(d)?"<div class='dot'></div>":"<div style='height:7px'></div>");
+    const el = document.createElement("div");
+    const isToday = isThisMonth && d===today.getDate();
+    el.className = "day"+(isToday?" today":payDays.has(d)?" pay":"");
+    el.innerHTML = "<div class='num'>"+d+"</div>"+(payDays.has(d)?"<div class='dot'></div>":"<div style='height:7px'></div>");
     inner.appendChild(el);
   }
-  strip.style.display="block";
-  requestAnimationFrame(()=>{ strip.scrollLeft = Math.max(0,(today.getDate()-4)*40); });
+  const first = isThisMonth ? today.getDate() : (Math.min(...payDays) || 1);
+  requestAnimationFrame(()=>{ $("strip").scrollLeft = Math.max(0,(first-4)*40); });
 }
 
-/* ================= 기록 ================= */
-
-function snapshotCurrent(){
-  if(!currentRows.length) return;
-  const store = loadStore();
-  const todayKey = today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate();
-  const snap = {
-    savedAt: todayKey,
-    label: (today.getMonth()+1)+"/"+today.getDate(),
-    rows: currentRows.map(r=>({issuerKey:r.issuerKey, amount:r.amount, month:r.month, day:r.day, note:r.note||null})),
-    total: currentRows.reduce((s,r)=>s+r.amount,0)
-  };
-  // 같은 날 저장은 덮어쓰기
-  store.snapshots = store.snapshots.filter(s=>s.savedAt!==todayKey);
-  store.snapshots.unshift(snap);
-  if(store.snapshots.length>24) store.snapshots.length = 24;
-  const ok = saveStore(store);
-  if(!ok) toast("이 환경에선 저장이 안 됩니다 — 홈 화면 설치 후엔 저장됩니다");
-}
-
-function renderHistory(){
-  const store = loadStore();
+function renderHistory(store, keys){
   const wrap = $("history"), list = $("historyList");
-  if(!store.snapshots.length){ wrap.style.display="none"; return; }
-  wrap.style.display="block";
-  list.innerHTML="";
-  store.snapshots.forEach((s,idx)=>{
+  if(keys.length < 1){ wrap.style.display="none"; return; }
+  wrap.style.display = "block";
+  list.innerHTML = "";
+  for(const key of keys){
+    const rows = monthRows(store, key);
+    const total = rows.reduce((s,r)=>s+r.amount,0);
     const row = document.createElement("div");
-    row.className="hrow";
+    row.className = "hrow"+(key===selectedKey?" sel":"");
     row.innerHTML =
-      "<div class='hmain'><span class='hdate'>"+s.label+" 정리</span> <span class='hsub'>"+s.rows.length+"개 카드</span></div>"+
-      "<div class='hamt'>"+fmt(s.total)+"원</div>"+
-      "<button class='hdel' aria-label='삭제'>×</button>";
-    row.querySelector(".hmain").addEventListener("click", ()=>{
-      renderRows(s.rows.map(r=>({...r})));
+      "<div class='hmain'><span class='hdate'>"+key.slice(0,4)+"년 "+keyLabel(key)+"</span><span class='hsub'>"+rows.length+"개 카드</span></div>"+
+      "<div class='hamt'>"+fmt(total)+"원</div>";
+    row.addEventListener("click", ()=>{
+      selectedKey = key;
+      render();
       window.scrollTo({top:0, behavior:"smooth"});
     });
-    row.querySelector(".hdel").addEventListener("click", ()=>{
-      const st = loadStore();
-      st.snapshots.splice(idx,1);
-      saveStore(st);
-      renderHistory();
-      toast("기록을 삭제했습니다");
-    });
     list.appendChild(row);
-  });
+  }
 }
 
 /* ================= 동작 ================= */
 
+function copyText(text, okMsg){
+  const done = ()=>toast(okMsg);
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(()=>fallbackCopy(text, done));
+  } else fallbackCopy(text, done);
+}
+function fallbackCopy(text, done){
+  const ta = document.createElement("textarea");
+  ta.value = text; ta.style.position="fixed"; ta.style.opacity="0";
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try{ document.execCommand("copy"); done(); }
+  catch(e){ toast("복사가 안 되면 화면을 캡처해 주세요"); }
+  document.body.removeChild(ta);
+}
+
 function handleParse(){
   const text = $("input").value.trim();
   if(!text){ toast("먼저 청구문자를 붙여넣어 주세요"); return; }
+
+  // 백업 복원
+  if(text.startsWith("BILLMOA:")){
+    try{
+      const json = decodeURIComponent(escape(atob(text.slice(8).trim())));
+      const restored = migrate(JSON.parse(json));
+      saveStore(restored);
+      selectedKey = null;
+      $("input").value = "";
+      render();
+      toast("백업을 복원했습니다");
+    }catch(e){ toast("백업 글이 손상됐습니다"); }
+    return;
+  }
+
   const {rows, missed} = parseAll(text);
-  $("count").textContent = rows.length ? rows.length+"건 인식" : "";
 
   $("miss").style.display = missed.length ? "block":"none";
   if(missed.length){
@@ -425,30 +503,56 @@ function handleParse(){
       + missed.map(m=>"· "+m.replace(/\s+/g," ").slice(0,60)+(m.length>60?"…":"")).join("\n");
   }
 
-  if(rows.length){
-    renderRows(rows);
-    snapshotCurrent();
-    renderHistory();
-    $("input").value = "";
-    toast("정리 완료 — 기록에 저장했습니다");
-  } else {
-    renderRows([]);
-    toast("인식된 청구문자가 없습니다");
-  }
+  if(!rows.length){ $("count").textContent=""; toast("인식된 청구문자가 없습니다"); return; }
+
+  const store = loadStore();
+  const touched = mergeRows(store, rows).sort();
+  const ok = saveStore(store);
+  selectedKey = touched[touched.length-1];
+  $("input").value = "";
+  $("count").textContent = rows.length+"건 인식";
+  render();
+  const monthCards = Object.keys(store.months[selectedKey].rows).length;
+  toast(ok ? keyLabel(selectedKey)+" 청구서에 모았습니다 · 총 "+monthCards+"개 카드"
+           : "이 화면에선 저장이 안 됩니다 — 홈 화면 앱에서 써 주세요");
 }
 
-$("parseBtn").addEventListener("click", handleParse);
-$("clearBtn").addEventListener("click", ()=>{ $("input").value=""; $("count").textContent=""; });
+$("shareBtn").addEventListener("click", ()=>{
+  const store = loadStore();
+  const rows = selectedKey ? monthRows(store, selectedKey) : [];
+  if(!rows.length){ toast("먼저 청구문자를 모아 주세요"); return; }
+  const total = rows.reduce((s,r)=>s+r.amount,0);
+  const lines = rows.map(r=>{
+    const name = r.issuerKey.replace("NH농협카드","농협").replace("IBK기업은행","IBK").replace("카드","");
+    const when = r.day!=null ? " ("+r.month+"/"+r.day+" 출금)" : "";
+    return "· "+name+" "+fmt(r.amount)+"원"+when;
+  });
+  copyText(keyLabel(selectedKey)+" 카드값 "+fmt(total)+"원\n"+lines.join("\n"), "복사 완료 — 카톡에 붙여넣으세요");
+});
 
-// 시작: 마지막 기록이 있으면 그걸 보여준다
+$("backupBtn").addEventListener("click", ()=>{
+  const store = loadStore();
+  if(!Object.keys(store.months).length){ toast("백업할 기록이 없습니다"); return; }
+  const code = "BILLMOA:"+btoa(unescape(encodeURIComponent(JSON.stringify(store))));
+  copyText(code, "백업 복사 완료 — 메모장이나 카톡 나에게 보내기에 저장하세요");
+});
+
+$("parseBtn").addEventListener("click", handleParse);
+$("clearBtn").addEventListener("click", ()=>{ $("input").value=""; $("count").textContent=""; $("miss").style.display="none"; });
+
+// 아이폰 사파리 창에서 열었으면 홈 화면 앱으로 쓰라고 안내
+(function(){
+  const iOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
+  const standalone = window.navigator.standalone === true ||
+    (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+  if(iOS && !standalone) $("banner").style.display = "block";
+})();
+
+// 이전 버전 기록이 있으면 새 구조로 바꿔 저장해 둔다
 (function init(){
   const store = loadStore();
-  if(store.snapshots.length){
-    renderRows(store.snapshots[0].rows.map(r=>({...r})));
-  } else {
-    $("empty").style.display="block";
-  }
-  renderHistory();
+  saveStore(store);
+  render();
 })();
 </script>
 </body>
